@@ -13,11 +13,11 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.Singular;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
+@Setter
 @Builder
 @EqualsAndHashCode(of = "isbn")
 @Entity
@@ -27,12 +27,9 @@ public class Book implements Serializable {
 	
 	@Id
 	String isbn;
-	@Setter
 	String title;
-	@Singular
 	@ManyToMany
 	Set<Author> authors;
-	@Setter
 	@ManyToOne
 	Publisher publisher;
 }
