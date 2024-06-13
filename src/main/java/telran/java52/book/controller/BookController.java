@@ -30,7 +30,7 @@ public class BookController {
 		return bookService.findBookByIsbn(isbn);
 	}
 
-	@GetMapping("/books/author{author}")
+	@GetMapping("/books/author/{author}")
 	public BookDto[] findBooksByAuthor(@PathVariable String author) {
 		return bookService.findBooksByAuthor(author);
 	}
