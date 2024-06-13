@@ -21,7 +21,8 @@ public class AuthorRepositoryImpl implements AuthorRepository {
 
 	@Override
 	public Author save(Author author) {
-		em.persist(author);
+		em.persist(author); // только добавление нового
+//		em.merge(author); //перезапись существующего или добавление нового
 		return author;
 	}
 
