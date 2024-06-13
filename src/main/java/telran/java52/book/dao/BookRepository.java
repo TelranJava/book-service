@@ -1,16 +1,22 @@
 package telran.java52.book.dao;
 
-import java.util.stream.Stream;
-
-import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.Optional;
 
 import telran.java52.book.model.Book;
 
-public interface BookRepository extends JpaRepository<Book, String> {
+public interface BookRepository {
 //
 //	Stream<Book> findByPublisherPublisherName(String name);
 //
 //	Stream<Book> findByAuthorsName(String name);
 
 	void deleteByAuthorsName(String name);
+
+	boolean existsById(String isbn);
+
+	Book save(Book book);
+
+	Optional<Book> findById(String isbn);
+
+	void deleteById(String isbn);
 }
