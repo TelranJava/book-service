@@ -1,5 +1,6 @@
 package telran.java52.book.service;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -55,54 +56,81 @@ public class BookServiceImpl implements BookService {
 
 	@Transactional
 	@Override
+	public BookDto updateBookTitle(String isbn, String newTitle) {
+		Book book = bookRepository.findById(isbn).orElseThrow(EntityNotFoundException::new);
+		book.setTitle(newTitle);
+		bookRepository.save(book);
+		return modelMapper.map(book, BookDto.class);
+	}
+
+	@Transactional
+	@Override
 	public BookDto removeBookByIsbn(String isbn) {
 		Book book = bookRepository.findById(isbn).orElseThrow(EntityNotFoundException::new);
 		bookRepository.deleteById(isbn);
 		return modelMapper.map(book, BookDto.class);
 	}
 
-	@Transactional
-	@Override
-	public BookDto updateBookTitle(String isbn, String newTitle) {
-		Book book = bookRepository.findById(isbn).orElseThrow(EntityNotFoundException::new);
-		book.setTitle(newTitle);
-		return modelMapper.map(book, BookDto.class);
-	}
-
+	// TODO now it's not working
 	@Transactional(readOnly = true)
 	@Override
 	public BookDto[] findBooksByAuthor(String name) {
-		return bookRepository.findByAuthorsName(name).map(b -> modelMapper.map(b, BookDto.class))
+		Author author = authorRepository.findById(name).orElseThrow(EntityNotFoundException::new);
+		return bookRepository.findBooksByAuthor(author)
+				.stream().map(b -> modelMapper.map(b, BookDto.class))
 				.toArray(BookDto[]::new);
 	}
 
 	@Transactional(readOnly = true)
 	@Override
 	public BookDto[] findBooksByPublisher(String publisher) {
-		return bookRepository.findByPublisherPublisherName(publisher).map(b -> modelMapper.map(b, BookDto.class))
-				.toArray(BookDto[]::new);
+		return bookRepository.findBooksByPublisher(new Publisher(publisher)).stream()
+				.map(b -> modelMapper.map(b, BookDto.class)).toArray(BookDto[]::new);
 	}
 
 	@Transactional(readOnly = true)
 	@Override
 	public AuthorDto[] findBookAuthors(String isbn) {
 		Book book = bookRepository.findById(isbn).orElseThrow(EntityNotFoundException::new);
-		return book.getAuthors().stream().map(a -> modelMapper.map(a, AuthorDto.class)).toArray(AuthorDto[]::new);
+		return book.getAuthors().stream()
+				.map(a -> modelMapper.map(a, AuthorDto.class))
+				.toArray(AuthorDto[]::new);
 	}
 
+	// TODO now it's not working
 	@Transactional(readOnly = true)
 	@Override
 	public String[] findPublishersByAuthor(String name) {
-		return publisherRepository.findPublishersByAuthor(name).stream().toArray(String[]::new);
+		Author author = authorRepository.findById(name).orElseThrow(EntityNotFoundException::new);
+		List<Book> books =  bookRepository.findBooksByAuthor(author);
+		return books.stream()
+				.map(b -> b.getPublisher().toString())
+				.toArray(String[] ::new);
 	}
 
+	// TODO now it's not working
 	@Transactional
 	@Override
 	public AuthorDto removeAuthor(String authorName) {
 		Author author = authorRepository.findById(authorName).orElseThrow(EntityNotFoundException::new);
-//		bookRepository.findByAuthorsName(authorName).forEach(b->bookRepository.delete(b));
-		bookRepository.deleteByAuthorsName(authorName);
-		authorRepository.deleteById(authorName);
+		List<Book> books = bookRepository.findBooksByAuthor(author);
+		if (books.size() > 0) {
+			for (int i = 0; i < books.size(); i++) {
+				Book book = books.get(i);
+				Set<Author> authors = book.getAuthors();
+				if (authors.contains(author) && authors.size() > 1) {
+					authors.remove(author);
+					book.setAuthors(authors);
+					bookRepository.save(book);
+				}
+			}
+		}
+		books = bookRepository.findBooksByAuthor(author);
+		if (books.size() > 0) {
+			throw new RuntimeException("The author cannot be removed");
+		}
+		authorRepository.deleteById(author.getName());
 		return modelMapper.map(author, AuthorDto.class);
 	}
+
 }
