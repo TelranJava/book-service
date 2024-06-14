@@ -4,7 +4,6 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -12,14 +11,14 @@ import telran.java52.book.model.Publisher;
 
 @Repository
 public class PublisherRepositoryImpl implements PublisherRepository {
-	
+
 	@PersistenceContext
 	EntityManager em;
 
 	@Override
-	public Stream<Publisher> findDistinctByBooksAuthorsName(String authorName) {
-		// TODO Auto-generated method stub
-		return null;
+	public Stream<Publisher> findDistinctByBooksAuthorsName(String name) {
+		String jpql = "SELECT DISTINCT p FROM Book b JOIN b.publisher p JOIN b.authors a WHERE a.name = :name";
+		return em.createQuery(jpql, Publisher.class).setParameter("name", name).getResultStream();
 	}
 
 //	@Transactional
@@ -27,7 +26,6 @@ public class PublisherRepositoryImpl implements PublisherRepository {
 	public Publisher save(Publisher publisher) {
 		em.persist(publisher);// только добавление нового
 //		em.merge(publisher); //перезапись существующего или добавление нового
-
 		return publisher;
 	}
 
@@ -38,8 +36,7 @@ public class PublisherRepositoryImpl implements PublisherRepository {
 
 	@Override
 	public void deleteById(String name) {
-		// TODO Auto-generated method stub
-
+		em.remove(em.find(Publisher.class, name));
 	}
 
 }

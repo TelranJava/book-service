@@ -13,11 +13,11 @@ public class BookRepositoryImpl implements BookRepository {
 
 	@PersistenceContext
 	EntityManager em;
-	
+
 	@Override
 	public void deleteByAuthorsName(String name) {
-		// TODO Auto-generated method stub
-
+		String jpql = "DELETE FROM Book b WHERE b.authors.name = :name";
+		em.createQuery(jpql).setParameter("name", name).executeUpdate();
 	}
 
 	@Override
@@ -27,20 +27,18 @@ public class BookRepositoryImpl implements BookRepository {
 
 	@Override
 	public Book save(Book book) {
-		em.persist(book);
+		em.persist(book); // только добавление нового
 		return book;
 	}
 
 	@Override
 	public Optional<Book> findById(String isbn) {
-		// TODO Auto-generated method stub
-		return Optional.empty();
+		return Optional.ofNullable(em.find(Book.class, isbn));
 	}
 
 	@Override
 	public void deleteById(String isbn) {
-		// TODO Auto-generated method stub
-
+		em.remove(em.find(Book.class, isbn));
 	}
 
 }
