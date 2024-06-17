@@ -5,8 +5,6 @@ import java.util.stream.Stream;
 
 import org.springframework.stereotype.Repository;
 
-import com.fasterxml.jackson.databind.deser.std.StringArrayDeserializer;
-
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import telran.java52.book.model.Book;
