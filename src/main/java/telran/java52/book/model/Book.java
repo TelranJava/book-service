@@ -25,8 +25,7 @@ import lombok.Setter;
 @Builder
 @EqualsAndHashCode(of = "isbn")
 @Entity
-@Table(name = "BOOK") // как называется таблица которой соответствует эта сущность в уже существующей
-						// таблице
+@Table(name = "BOOK") // как называется таблица которой соответствует эта сущность в уже существующей таблице
 public class Book implements Serializable {
 
 	private static final long serialVersionUID = 1950334873767354808L;
@@ -41,8 +40,7 @@ public class Book implements Serializable {
 	@JoinTable( // описание таблицы связи
 			name = "BOOK_AUTHORS", // имя существующей таблицы к которой мы привязываемся
 			joinColumns = @JoinColumn(name = "BOOK_ISBN"), // поле которое отвечает за ключ книги(текущая сущность)
-			inverseJoinColumns = @JoinColumn(name = "AUTHORS_NAME") // поле которое отвечает за ключ автора(родительская
-																	// сущность)
+			inverseJoinColumns = @JoinColumn(name = "AUTHORS_NAME") // поле которое отвечает за ключ автора(родительская сущность)
 	)
 	Set<Author> authors;
 	@ManyToOne 

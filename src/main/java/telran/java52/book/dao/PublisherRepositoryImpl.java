@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
 import telran.java52.book.model.Publisher;
 
 @Repository
@@ -16,9 +17,19 @@ public class PublisherRepositoryImpl implements PublisherRepository {
 	EntityManager em;
 
 	@Override
-	public Stream<Publisher> findDistinctByBooksAuthorsName(String name) {
-		String jpql = "SELECT DISTINCT p FROM Book b JOIN b.publisher p JOIN b.authors a WHERE a.name = :name";
-		return em.createQuery(jpql, Publisher.class).setParameter("name", name).getResultStream();
+	public Stream<Publisher> findDistinctByBooksAuthorsName(String name) {		
+//		TypedQuery<String> query = em.createQuery(
+//				"select distinct p.publisherName from Book b join b.publisher p join b.authors a where a.name = ?1",
+//				String.class);
+//		query.setParameter(1, name);
+//		return query.getResultStream();
+
+//		String jpql = "SELECT DISTINCT p FROM Book b JOIN b.publisher p JOIN b.authors a WHERE a.name = :name";
+//		return em.createQuery(jpql, Publisher.class).setParameter("name", name).getResultStream();
+		
+		return em.createQuery(
+				"select distinct p.publisherName from Book b join b.publisher p join b.authors a where a.name = ?1",
+				Publisher.class).setParameter(1, name).getResultStream();
 	}
 
 //	@Transactional
