@@ -1,14 +1,15 @@
 package telran.java52.book.dao;
 
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import telran.java52.book.model.Book;
 
 public interface BookRepository {
-//
-//	Stream<Book> findByPublisherPublisherName(String name);
-//
-//	Stream<Book> findByAuthorsName(String name);
+
+	Stream<Book> findByPublisherPublisherName(String name);
+
+	Stream<Book> findByAuthorsName(String name);
 
 	void deleteByAuthorsName(String name);
 

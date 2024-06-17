@@ -27,8 +27,12 @@ public class PublisherRepositoryImpl implements PublisherRepository {
 //		String jpql = "SELECT DISTINCT p FROM Book b JOIN b.publisher p JOIN b.authors a WHERE a.name = :name";
 //		return em.createQuery(jpql, Publisher.class).setParameter("name", name).getResultStream();
 		
+//		return em.createQuery(
+//				"select distinct p.publisherName from Book b join b.publisher p join b.authors a where a.name = ?1",
+//				Publisher.class).setParameter(1, name).getResultStream();
+		
 		return em.createQuery(
-				"select distinct p.publisherName from Book b join b.publisher p join b.authors a where a.name = ?1",
+				"select distinct p from Book b join b.publisher p join b.authors a where a.name = ?1",
 				Publisher.class).setParameter(1, name).getResultStream();
 	}
 
