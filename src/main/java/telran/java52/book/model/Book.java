@@ -44,6 +44,6 @@ public class Book implements Serializable {
 	)
 	Set<Author> authors;
 	@ManyToOne 
-	@JoinColumn(name = "PUBLISHER_PUBLISHER_NAME", nullable = false) // название поля в таблице Book которое содержит информацию о Publisher
+//	@JoinColumn(name = "PUBLISHER_PUBLISHER_NAME", nullable = false) // название поля в таблице Book которое содержит информацию о Publisher
 	Publisher publisher;
 }
